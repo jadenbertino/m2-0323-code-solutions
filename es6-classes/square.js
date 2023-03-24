@@ -2,8 +2,8 @@
 /* exported Square */
 
 class Square extends Shape {
-  constructor(area, circumference, width) {
-    super(area, circumference)
+  constructor(width) {
+    super()
     this.width = width
   }
 
@@ -12,5 +12,5 @@ class Square extends Shape {
   }
 }
 
-const mySquare = new Square(20, 10, 50)
+const mySquare = new Square(50)
 console.log(mySquare.print())
