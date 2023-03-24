@@ -9,7 +9,6 @@ class Shape {
   print() {
     return `The area is ${this.area} and the circumference is ${this.circumference}`
   }
-
 }
 
 const myShape = new Shape(10, 20)
