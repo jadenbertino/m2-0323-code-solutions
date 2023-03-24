@@ -8,14 +8,16 @@ class Account {
   }
 
   deposit(amount) {
-    if (amount <= 0 || typeof amount !== 'number') return false
+    // amount must be positive integer
+    if (!(Number.isInteger(amount) && amount > 0)) return false
     const depositTransaction = new Transaction("deposit", amount)
     this.transactions.push(depositTransaction)
     return true
   }
-
+  
   withdraw(amount) {
-    if (amount <= 0 || typeof amount !== 'number') return false
+    // amount must be positive integer
+    if (!(Number.isInteger(amount) && amount > 0)) return false
     const withdrawalTransaction = new Transaction("withdrawal", amount)
     this.transactions.push(withdrawalTransaction)
     return true

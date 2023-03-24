@@ -6,8 +6,9 @@ class Bank {
     this.accounts = []
   }
 
-  openAccountNumber(holder, balance) {
-    if (typeof balance !== 'number' || balance <= 0 || typeof holder !== 'string') return null
+  openAccount(holder, balance) {
+    // amount must be positive integer
+    if (!(Number.isInteger(balance) && balance > 0) || typeof holder !== 'string') return null
     const newAccount = new Account(this.nextAccountNumber, holder)
     newAccount.deposit(balance)
     this.accounts.push(newAccount)
