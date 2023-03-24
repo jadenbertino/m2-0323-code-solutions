@@ -3,7 +3,9 @@
 
 class Square extends Shape {
   constructor(width) {
-    super()
+    const area = width * width
+    const circumference = width * 4
+    super(area, circumference)
     this.width = width
   }
 

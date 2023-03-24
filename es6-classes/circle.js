@@ -3,7 +3,11 @@
 
 class Circle extends Shape {
   constructor(radius) {
-    super()
+    let area = radius * radius * Math.PI
+    area = Number(area.toFixed(2)) // round to 2 decimal places
+    let circumference = radius * 2 * Math.PI
+    circumference = Number(circumference.toFixed(2))
+    super(area, circumference)
     this.radius = radius
   }
 
