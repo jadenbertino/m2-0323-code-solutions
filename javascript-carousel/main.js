@@ -9,8 +9,6 @@ const pokemonImgs = [
 const $pokemonCarousel = document.querySelector('#pokemon-carousel')
 const $pokemonCarouselImg = document.querySelector('#pokemon-carousel img')
 const $pokemonCarouselNavDots = document.querySelector('#pokemon-carousel .navigation-dots')
-const $leftArrow = document.querySelector('#pokemon-carousel .btn.nav-right')
-const $rightArrow = document.querySelector('#pokemon-carousel .btn-nav-left')
 
 function insertNavDot({active}, ind) {
   const navDotBtn = document.createElement('button')
@@ -32,6 +30,7 @@ function setNewImage(target) {
     throw new TypeError(`setNewImage expected "left", "right", or the index of the target image`)
   }
   
+  // get oldImg & it's index
   const oldImg = pokemonImgs.find(img => img.active)
   const oldInd = pokemonImgs.indexOf(oldImg)
   
@@ -45,20 +44,20 @@ function setNewImage(target) {
   }
   const newImg = pokemonImgs[newInd]
 
-  // update active property on old & new img
+  // update active properties
   oldImg.active = false
   newImg.active = true
 
-  // update img
+  // update dom img
   $pokemonCarouselImg.src = newImg.src
   $pokemonCarouselImg.alt = newImg.alt
   
-  // update navDots, note that dots are wrapped in a button
+  // update navDots (note that dots are wrapped in a <button>)
   $pokemonCarouselNavDots.children[oldInd].firstChild.className = 'fa-regular fa-circle'
   $pokemonCarouselNavDots.children[newInd].firstChild.className = 'fa-solid fa-circle'
 }
 
-// auto scroll every 5 seconds + if user clicks then it resets the interval
+// auto scroll every 3 seconds + user click resets the interval
 let pokemonIntervalID
 
 function resetInterval() {
@@ -70,6 +69,7 @@ function resetInterval() {
 
 pokemonIntervalID = resetInterval()
 
+// user click buttons to navigate through carousel
 $pokemonCarousel.addEventListener('click', (e) => {
 
   // arrow clicks
