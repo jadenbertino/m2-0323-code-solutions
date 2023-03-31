@@ -58,15 +58,28 @@ function setNewImage(target) {
   $pokemonCarouselNavDots.children[newInd].firstChild.className = 'fa-solid fa-circle'
 }
 
+// auto scroll every 5 seconds + if user clicks then it resets the interval
+let pokemonIntervalID
+
+function resetInterval() {
+  if (pokemonIntervalID) clearInterval(pokemonIntervalID)
+  return setInterval(() => {
+    setNewImage('right')
+  }, 5000);
+}
+
+pokemonIntervalID = resetInterval()
+
 $pokemonCarousel.addEventListener('click', (e) => {
 
   // arrow clicks
-  if (e.target.classList.contains('nav-right')) setNewImage('right')
-  if (e.target.classList.contains('nav-left')) setNewImage('left')
+  if (e.target.classList.contains('nav-right')) setNewImage('right'); pokemonIntervalID = resetInterval();
+  if (e.target.classList.contains('nav-left')) setNewImage('left'); pokemonIntervalID = resetInterval();
 
   // nav dot clicks
   if (e.target.classList.contains('nav-dot')) {
     const targetInd = e.target.getAttribute('ind')
     setNewImage(targetInd)
+    pokemonIntervalID = resetInterval();
   }
 })

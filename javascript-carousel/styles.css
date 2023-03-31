@@ -8,6 +8,13 @@ body {
   font-family: sans-serif;
 }
 
+main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .container {
   width: 100%;
   display: flex;
@@ -18,6 +25,10 @@ body {
 .row {
   max-width: 1328px;  /* 1280 + 24px padding */
   width: 100%;
+}
+
+.row-sm {
+  max-width: 980px;
 }
 
 .col {
@@ -33,8 +44,11 @@ body {
 
 /* CAROUSEL */
 
-.carousel {
+.container:has(.carousel) {
   background-color: lightblue;
+}
+
+.carousel {
   display: flex;
   justify-content: space-between;
   align-items: center;
