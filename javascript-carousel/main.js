@@ -65,7 +65,7 @@ function resetInterval() {
   if (pokemonIntervalID) clearInterval(pokemonIntervalID)
   return setInterval(() => {
     setNewImage('right')
-  }, 5000);
+  }, 3000);
 }
 
 pokemonIntervalID = resetInterval()
