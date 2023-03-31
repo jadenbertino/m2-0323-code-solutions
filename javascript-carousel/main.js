@@ -12,9 +12,10 @@ const $pokemonCarouselNavDots = document.querySelector('#pokemon-carousel .navig
 const $leftArrow = document.querySelector('#pokemon-carousel .btn.nav-right')
 const $rightArrow = document.querySelector('#pokemon-carousel .btn-nav-left')
 
-function insertNavDot({active, ind}) {
+function insertNavDot({active}, ind) {
   const navDotBtn = document.createElement('button')
-  navDotBtn.className = 'btn'
+  navDotBtn.className = 'btn nav-dot'
+  navDotBtn.setAttribute('ind', ind)
 
   const navDot = document.createElement('i')
   navDot.className = active ? 'fa-solid fa-circle' : 'fa-regular fa-circle'
@@ -23,23 +24,23 @@ function insertNavDot({active, ind}) {
   $pokemonCarouselNavDots.appendChild(navDotBtn)
 }
 
-pokemonImgs.forEach(img => insertNavDot(img))
+pokemonImgs.forEach((img, i) => insertNavDot(img, i))
   
 function setNewImage(target) {
+  // target must be "left", "right", or index of the target img
   if (target !== 'left' && target !== 'right' && (target < 0 || target >= pokemonImgs.length)) {
     throw new TypeError(`setNewImage expected "left", "right", or the index of the target image`)
   }
   
-  // get old img and it's index
   const oldImg = pokemonImgs.find(img => img.active)
   const oldInd = pokemonImgs.indexOf(oldImg)
   
-  // set new img & it's index based off *target* argument
+  // get newImg
   let newInd
-  if (typeof target === 'string') {
+  if (target === 'left' || target === 'right') {
     newInd = target === 'right' ? (oldInd + 1) % pokemonImgs.length : oldInd - 1
     if (newInd === -1) newInd = pokemonImgs.length - 1 // loop carousel
-  } else if (typeof target === 'number') {
+  } else {
     newInd = target
   }
   const newImg = pokemonImgs[newInd]
@@ -62,4 +63,10 @@ $pokemonCarousel.addEventListener('click', (e) => {
   // arrow clicks
   if (e.target.classList.contains('nav-right')) setNewImage('right')
   if (e.target.classList.contains('nav-left')) setNewImage('left')
+
+  // nav dot clicks
+  if (e.target.classList.contains('nav-dot')) {
+    const targetInd = e.target.getAttribute('ind')
+    setNewImage(targetInd)
+  }
 })
