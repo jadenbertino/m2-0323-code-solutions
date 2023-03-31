@@ -75,3 +75,11 @@ main {
   font-size: 16px;
   pointer-events: none;
 }
+
+.carousel .nav-dot {
+  transition: transform 200ms ease-out;
+}
+
+.carousel .nav-dot:hover {
+  transform: scale(1.1);
+}
