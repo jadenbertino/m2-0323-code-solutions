@@ -73,8 +73,8 @@ pokemonIntervalID = resetInterval()
 $pokemonCarousel.addEventListener('click', (e) => {
 
   // arrow clicks
-  if (e.target.classList.contains('nav-right')) setNewImage('right'); pokemonIntervalID = resetInterval();
-  if (e.target.classList.contains('nav-left')) setNewImage('left'); pokemonIntervalID = resetInterval();
+  if (e.target.classList.contains('nav-right')) { setNewImage('right'); pokemonIntervalID = resetInterval(); }
+  if (e.target.classList.contains('nav-left')) { setNewImage('left'); pokemonIntervalID = resetInterval(); }
 
   // nav dot clicks
   if (e.target.classList.contains('nav-dot')) {
