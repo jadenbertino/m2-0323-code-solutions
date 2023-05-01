@@ -1,0 +1,90 @@
+    1  code ~/.zshrc
+    2  source ~/.zshrc
+    3  source ~/.bashrc
+    4  fasdfasdf
+    5  source ~/.bashrc
+    6  wsl -l -v
+    7  source ~/.zshrc
+    8  code ~/.zshrc
+    9  source ~/.zshrc
+   10  nvm install -lts
+   11  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+   12  zsh
+   13  nvm install --lts
+   14  sudo apt install git
+   15  type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)\ncurl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \\n&& sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \\n&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \\n&& sudo apt update \\n&& sudo apt install gh -y
+   16  ls
+   17  pwd
+   18  explorer.exe .
+   19  ls
+   20  mkdir projects
+   21  cd projects
+   22  gh repo clone jadenbertino/m2-0323-code-solutions
+   23  gh auth login
+   24  gh repo clone jadenbertino/m2-0323-code-solutions
+   25  cd m2-0323-code-solutions
+   26  code .
+   27  explorer.exe .
+   28  git sc command-line-basics
+   29  git config --global alias.sc "switch -c"
+   30  git sc command-line-basics
+   31  man cat
+   32  cat laziness.txt impatience.txt hubris.txt
+   33  cat laziness.txt
+   34  cd command-line-basics
+   35  cat laziness.txt impatience.txt hubris.txt
+   36  cat laziness.txt impatience.txt hubris.txt > three-virtues.txt\n
+   37  cat three-virtues.txt
+   38  man cat
+   39  man ls
+   40  ls
+   41  ls -a
+   42  ls -f
+   43  man ls
+   44  ls -F
+   45  man ls
+   46  ls
+   47  cd lfz-staff
+   48  ls
+   49  ls -a
+   50  ls -F
+   51  ls -aF
+   52  ls -aF > contents.txt
+   53  cat contents.txt
+   54  cd ..
+   55  ls -aF lfz-staff
+   56  pwd
+   57  man pwd
+   58  pwd > i-was-here.txt
+   59  cat i-was-here.txt
+   60  ls
+   61  man echo
+   62  echo 'Hello World'
+   63  echo 'Hello, World!' > hello.txt
+   64  cat hello.txt
+   65  ls
+   66  cat hello.txt
+   67  man touch
+   68  touch tag-youre-it.txt
+   69  ls
+   70  touch snoot/boop.txt
+   71  ls
+   72  ls snoot
+   73  man mkdir
+   74  mkdir parent
+   75  ls -F
+   76  mkdir -p parent/child/grandchild
+   77  touch parent/child/grandchild/.gitkeep
+   78  ls parent/child/grandchild
+   79  ls -a parent/child/grandchild
+   80  man mv
+   81  mv pokiemans pokemon
+   82  man rm
+   83  man rmdir
+   84  rm lol.txt
+   85  ls
+   86  rm -r kill-me
+   87  ls
+   88  man cp
+   89  man history
+   90  history
