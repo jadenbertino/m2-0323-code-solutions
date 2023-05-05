@@ -1,9 +1,11 @@
-import readFileContents from "./readFileContents.js"
+import getFileContent from './getFileContent.js';
 
 async function concacenate(filesToRead) {
-  const fileContents = filesToRead.map(file => readFileContents(file))
-  return await Promise.all(fileContents)
+  const pendingFileContents = filesToRead.map(file => getFileContent(file));
+  const fileContents = await Promise.all(pendingFileContents);
+  return fileContents.join('\n')
 }
 
-const filesToRead = process.argv.slice(2)
-concacenate(filesToRead)
+const filesToRead = process.argv.slice(2);
+const fileContents = await concacenate(filesToRead);
+console.log(fileContents);

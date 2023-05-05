@@ -1,3 +1,4 @@
-import readFileContents from './readFileContents.js'
+import getFileContent from './getFileContent.js';
 
-readFileContents('./dijkstra.txt')
+const fileContent = await getFileContent('./dijkstra.txt');
+console.log(fileContent);
