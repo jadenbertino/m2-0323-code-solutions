@@ -1,11 +1,11 @@
 import { readFile } from 'node:fs/promises';
 
-export default async function getFileContent(path) {
+export default async function getFileContent(file) {
   try {
-    const filePath = new URL(path, import.meta.url);
+    const filePath = new URL(file, import.meta.url);
     const fileContent = await readFile(filePath, { encoding: 'utf8' });
     return fileContent;
-  } catch (err) {
-    console.error(err.message);
+  } catch {
+    return ''
   }
 }
