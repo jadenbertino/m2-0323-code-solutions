@@ -4,7 +4,7 @@ const PORT = 8080
 
 app.use((req, res) => {
   console.log(req.method)
-  res.send('<h1>HOLA MUNDO !!</h2>')
+  res.send('<h1>HOLA MUNDO !!</h1>')
 })
 
 app.listen(PORT, () => {
