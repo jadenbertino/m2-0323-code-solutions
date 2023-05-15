@@ -7,12 +7,12 @@ import writeToFile from './writeToFile.js';
 const app = express();
 const PORT = 8080;
 const NOTES_URL = '/api/notes';
+const data = JSON.parse(await getFileContent('data.json'));
+const { notes } = data;
 
 // const notes = process.argv.slice(2);
 // const formattedNotes = notes.join('\n');
 // writeToFile('note.txt', formattedNotes);
-const data = JSON.parse(await getFileContent('data.json'));
-const { notes } = data;
 
 app.use(express.json());
 
@@ -28,28 +28,46 @@ app.get(NOTES_URL + '/:id', function getNoteByID(req, res) {
   }
 
   if (!hasMatchingID) {
-    return res.status(404).json({ error: 'Specified Note ID does not exist.' });
+    return res
+      .status(404)
+      .json({ error: 'Specified Note ID does not exist.' });
   }
 
-  res.status(200).json(notes[noteID]);
+  res
+    .status(200)
+    .json(notes[noteID]);
 });
 
 app.get(NOTES_URL, function getAllNotes(req, res) {
-  res.status(200).json(notes);
+  res
+    .status(200)
+    .json(notes);
 });
 
 app.post(NOTES_URL, function createNewNote(req, res) {
   const content = req.body.content;
-
-  if (content === undefined) {
-    res.status(400).json({
-      error: 'Must specify a "content" property in the request body.'
-    });
+  
+  if (content === undefined)  { // { || content === 'null' || content === 'undefined') {
+    return res
+      .status(400)
+      .json({ error: "Must specify a 'content' property in the request body." });
   }
-
-  // valid content + successfully created = 201 + created note with id
-  res.end()
-  // valid content + error = 500 + internal server error
+  
+  try {
+    const newNote = {
+      id: data.nextID,
+      content
+    }
+    notes.push({ [data.nextID]: newNote });
+    data.nextID++;
+    res
+      .status(201)
+      .json(newNote);
+  } catch {
+    res
+      .status(500)
+      .json({ error: "Internal server error." })
+  }
 });
 
 app.listen(PORT, () => {
