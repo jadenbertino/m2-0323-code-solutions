@@ -1,6 +1,9 @@
 import express from 'express';
 import { getFileContent, updateDatabase } from './fileUtils.js';
-import { hasMatchingId, isPositiveInteger, isValidContent } from './validationUtils.js';
+import {
+  validateContent,
+  validateId
+} from './validationUtils.js';
 
 const app = express();
 const PORT = 8080;
@@ -12,17 +15,7 @@ app.use(express.json());
 
 app.get(NOTES_URL + '/:id', function getNoteByID(req, res) {
   const noteId = req.params.id;
-
-  if (!isPositiveInteger(noteId)) {
-    return res
-      .status(400)
-      .json({ error: 'Note ID must be a positive integer' });
-  }
-
-  if (!hasMatchingId(noteId, notes)) {
-    return res.status(404).json({ error: 'Specified Note ID does not exist.' });
-  }
-
+  validateId(noteId, notes, res);
   res.status(200).json(notes[noteId]);
 });
 
@@ -32,12 +25,7 @@ app.get(NOTES_URL, function getAllNotes(req, res) {
 
 app.post(NOTES_URL, function createNote(req, res) {
   const content = req.body.content;
-
-  if (!isValidContent(content)) {
-    return res.status(400).json({
-      error: "Must specify a 'content' property in the request body."
-    });
-  }
+  validateContent(content, res);
 
   try {
     const newNote = { id: data.nextId, content };
@@ -53,16 +41,7 @@ app.post(NOTES_URL, function createNote(req, res) {
 
 app.delete(NOTES_URL + '/:id', function deleteNote(req, res) {
   const noteId = req.params.id;
-
-  if (!isPositiveInteger(noteId)) {
-    return res
-      .status(400)
-      .json({ error: 'Note ID must be a positive integer' });
-  }
-
-  if (!hasMatchingId(noteId, notes)) {
-    return res.status(404).json({ error: 'Specified Note ID does not exist.' });
-  }
+  validateId(noteId, notes, res);
 
   try {
     delete notes[noteId];
@@ -77,22 +56,8 @@ app.delete(NOTES_URL + '/:id', function deleteNote(req, res) {
 app.put(NOTES_URL + '/:id', function updateNote(req, res) {
   const content = req.body.content;
   const noteId = req.params.id;
-
-  if (!isPositiveInteger(noteId)) {
-    return res
-      .status(400)
-      .json({ error: 'Note ID must be a positive integer' });
-  }
-
-  if (!hasMatchingId(noteId, notes)) {
-    return res.status(404).json({ error: 'Specified Note ID does not exist.' });
-  }
-
-  if (!isValidContent(content)) {
-    return res.status(400).json({
-      error: "Must specify a 'content' property in the request body."
-    });
-  }
+  validateId(noteId, notes, res);
+  validateContent(content, res);
 
   try {
     const newNote = {
