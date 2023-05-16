@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
+import { readFile, writeFile } from 'node:fs/promises';
 
 export async function getFileContent(file) {
   try {

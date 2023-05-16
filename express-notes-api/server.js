@@ -1,9 +1,6 @@
 import express from 'express';
 import { getFileContent, updateDatabase } from './fileUtils.js';
-import {
-  validateContent,
-  validateId
-} from './validationUtils.js';
+import { validateContent, validateId } from './validationUtils.js';
 
 const app = express();
 const PORT = 8080;
