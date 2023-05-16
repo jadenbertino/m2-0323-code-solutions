@@ -1,5 +1,5 @@
 {
-	"nextId": 12,
+	"nextId": 17,
 	"notes": {
 		"2": {
 			"id": 2,
@@ -16,6 +16,20 @@
 		"11": {
 			"id": 11,
 			"content": "undefined"
+		},
+		"12": {
+			"id": 12,
+			"content": "yer a wizerd"
+		},
+		"13": {
+			"id": 13
+		},
+		"14": {
+			"id": 14
+		},
+		"15": {
+			"id": 15,
+			"content": "nullify"
 		}
 	}
 }

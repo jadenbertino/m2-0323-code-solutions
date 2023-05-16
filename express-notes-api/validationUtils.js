@@ -1,3 +1,11 @@
+export class CustomError extends Error {
+  constructor(statusCode, message) {
+    super();
+    this.statusCode = statusCode;
+    this.message = message;
+  }
+}
+
 /*
 
     ID VALIDATION
@@ -13,15 +21,13 @@ function hasMatchingId(id, notes) {
   return notes[id];
 }
 
-export function validateId(noteId, notes, res) {
+export function validateId(noteId, notes) {
   if (!isPositiveInteger(noteId)) {
-    return res
-      .status(400)
-      .json({ error: 'Note ID must be a positive integer' });
+    throw new CustomError(400, 'Note ID must be a positive integer')
   }
 
   if (!hasMatchingId(noteId, notes)) {
-    return res.status(404).json({ error: 'Specified Note ID does not exist.' });
+    throw new CustomError(404, 'Specified Note ID does not exist.')
   }
 }
 
@@ -31,15 +37,13 @@ export function validateId(noteId, notes, res) {
 
 */
 
-function isValidContent(content) {
+function isInvalidContent(content) {
   const invalidValues = [undefined, 'null', 'undefined'];
-  return invalidValues.includes(content);
+  return invalidValues.includes(content)
 }
 
-export function validateContent(content, res) {
-  if (!isValidContent(content)) {
-    return res.status(400).json({
-      error: "Must specify a 'content' property in the request body."
-    });
+export function validateContent(content) {
+  if (isInvalidContent(content)) {
+    throw new CustomError(400, "Must specify a 'content' property in the request body.")
   }
 }
