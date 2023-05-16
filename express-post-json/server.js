@@ -9,7 +9,7 @@ const grades = {};
 app.use(express.json());
 
 app.get(GRADES_URL, function getAllGrades(req, res) {
-  res.json(grades);
+  res.json(Object.values(grades));
 });
 
 app.post(GRADES_URL, function addNewGrade(req, res) {
