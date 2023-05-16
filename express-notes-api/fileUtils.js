@@ -24,6 +24,11 @@ export async function writeToFile(file, textContent) {
   }
 }
 
-export function updateDatabase(data) {
-  writeToFile('data.json', JSON.stringify(data, null, '\t'));
+export async function updateDatabase(data) {
+  await writeToFile('data.json', JSON.stringify(data, null, '\t'));
+}
+
+export async function getData() {
+  const data = JSON.parse(await getFileContent('data.json'));
+  return data;
 }

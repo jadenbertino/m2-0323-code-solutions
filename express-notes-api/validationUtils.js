@@ -33,9 +33,7 @@ export function validateId(noteId, notes, res) {
 
 function isValidContent(content) {
   const invalidValues = [undefined, 'null', 'undefined'];
-  return (
-    invalidValues.findIndex(invalidValue => invalidValue === content) === -1
-  );
+  return invalidValues.includes(content);
 }
 
 export function validateContent(content, res) {

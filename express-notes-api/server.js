@@ -1,34 +1,35 @@
 import express from 'express';
-import { getFileContent, updateDatabase } from './fileUtils.js';
+import { getData, updateDatabase } from './fileUtils.js';
 import { validateContent, validateId } from './validationUtils.js';
 
 const app = express();
 const PORT = 8080;
 const NOTES_URL = '/api/notes';
-const data = JSON.parse(await getFileContent('data.json'));
-const { notes } = data;
 
 app.use(express.json());
 
-app.get(NOTES_URL + '/:id', function getNoteByID(req, res) {
+app.get(NOTES_URL + '/:id', async function getNoteByID(req, res) {
+  const { notes } = await getData();
   const noteId = req.params.id;
   validateId(noteId, notes, res);
   res.status(200).json(notes[noteId]);
 });
 
-app.get(NOTES_URL, function getAllNotes(req, res) {
+app.get(NOTES_URL, async function getAllNotes(req, res) {
+  const { notes } = await getData();
   res.status(200).json(Object.values(notes));
 });
 
-app.post(NOTES_URL, function createNote(req, res) {
+app.post(NOTES_URL, async function createNote(req, res) {
+  let { notes, nextId } = await getData();
   const content = req.body.content;
   validateContent(content, res);
 
   try {
-    const newNote = { id: data.nextId, content };
-    notes[data.nextId] = newNote;
-    data.nextId++;
-    updateDatabase(data);
+    const newNote = { id: nextId, content };
+    notes[nextId] = newNote;
+    nextId++;
+    await updateDatabase({ nextId, notes });
     res.status(201).json(newNote);
   } catch (err) {
     console.error(err);
@@ -36,13 +37,14 @@ app.post(NOTES_URL, function createNote(req, res) {
   }
 });
 
-app.delete(NOTES_URL + '/:id', function deleteNote(req, res) {
+app.delete(NOTES_URL + '/:id', async function deleteNote(req, res) {
+  const { notes, nextId } = await getData();
   const noteId = req.params.id;
   validateId(noteId, notes, res);
 
   try {
     delete notes[noteId];
-    updateDatabase(data);
+    await updateDatabase({ nextId, notes });
     res.status(204).end();
   } catch (err) {
     console.error(err);
@@ -50,7 +52,8 @@ app.delete(NOTES_URL + '/:id', function deleteNote(req, res) {
   }
 });
 
-app.put(NOTES_URL + '/:id', function updateNote(req, res) {
+app.put(NOTES_URL + '/:id', async function updateNote(req, res) {
+  const { notes, nextId } = await getData();
   const content = req.body.content;
   const noteId = req.params.id;
   validateId(noteId, notes, res);
@@ -62,7 +65,7 @@ app.put(NOTES_URL + '/:id', function updateNote(req, res) {
       content
     };
     notes[noteId] = newNote;
-    updateDatabase(data);
+    updateDatabase({ nextId, notes });
     res.status(200).json(newNote);
   } catch (err) {
     console.error(err);
