@@ -3,21 +3,20 @@ const app = express();
 
 const PORT = 8080;
 const GRADES_URL = '/api/grades';
-
 let nextID = 1;
-const grades = [];
+const grades = {};
 
 app.use(express.json());
 
-app.get(GRADES_URL, (req, res) => {
+app.get(GRADES_URL, function getAllGrades(req, res) {
   res.json(grades);
 });
 
-app.post(GRADES_URL, (req, res) => {
-  const gradesUpdate = { ...req.body, nextID };
-  grades.push(gradesUpdate);
-  res.status(201).json(gradesUpdate);
+app.post(GRADES_URL, function addNewGrade(req, res) {
+  const newGrade = { ...req.body, id: nextID };
+  grades[nextID] = newGrade;
   nextID++;
+  res.status(201).json(newGrade);
 });
 
 app.listen(PORT, () => {
