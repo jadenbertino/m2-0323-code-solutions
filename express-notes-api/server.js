@@ -14,20 +14,27 @@ const { notes } = data;
 // const formattedNotes = notes.join('\n');
 // writeToFile('note.txt', formattedNotes);
 
+function isValidID(id) {
+  const positiveIntegerRegex = /^[1-9]\d*$/;
+  return positiveIntegerRegex.test(id);
+}
+
+function hasMatchingID(id) {
+  return notes[id];
+}
+
 app.use(express.json());
 
 app.get(NOTES_URL + '/:id', function getNoteByID(req, res) {
   const noteID = req.params.id;
-  const positiveIntegerRegex = /^[1-9]\d*$/;
-  const hasMatchingID = noteID < data.nextID;
 
-  if (!positiveIntegerRegex.test(noteID)) {
+  if (!isValidID(noteID)) {
     return res
       .status(400)
       .json({ error: 'Note ID must be a positive integer' });
   }
 
-  if (!hasMatchingID) {
+  if (!hasMatchingID(noteID)) {
     return res
       .status(404)
       .json({ error: 'Specified Note ID does not exist.' });
@@ -44,10 +51,10 @@ app.get(NOTES_URL, function getAllNotes(req, res) {
     .json(notes);
 });
 
-app.post(NOTES_URL, function createNewNote(req, res) {
+app.post(NOTES_URL, function createNote(req, res) {
   const content = req.body.content;
   
-  if (content === undefined)  { // { || content === 'null' || content === 'undefined') {
+  if (content === undefined)  {
     return res
       .status(400)
       .json({ error: "Must specify a 'content' property in the request body." });
@@ -63,12 +70,41 @@ app.post(NOTES_URL, function createNewNote(req, res) {
     res
       .status(201)
       .json(newNote);
-  } catch {
+  } catch (err) {
+    console.error(err)
     res
       .status(500)
       .json({ error: "Internal server error." })
   }
 });
+
+app.delete(NOTES_URL + "/:id", function deleteNote(req, res) {
+  const noteID = req.params.id;
+
+  if (!isValidID(noteID)) {
+    return res
+      .status(400)
+      .json({ error: 'Note ID must be a positive integer' });
+  }
+
+  if (!hasMatchingID(noteID)) {
+    return res
+      .status(404)
+      .json({ error: 'Specified Note ID does not exist.' });
+  }
+  
+  try {
+    delete notes[noteID];
+    res
+      .status(204)
+      .end()
+  } catch (err) {
+    console.error(err)
+    res
+      .status(500)
+      .json({ error: "Internal server error." })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Express server listening on port ${PORT}`);
