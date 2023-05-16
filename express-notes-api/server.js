@@ -58,7 +58,7 @@ app.put(NOTES_URL + '/:id', function updateNote(req, res) {
 
   try {
     const newNote = {
-      id: noteId,
+      id: Number(noteId),
       content
     };
     notes[noteId] = newNote;
