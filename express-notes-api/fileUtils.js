@@ -30,5 +30,3 @@ async function writeToFile(file, textContent) {
 export async function updateDatabase(data) {
   await writeToFile('data.json', JSON.stringify(data, null, '\t'));
 }
-
-

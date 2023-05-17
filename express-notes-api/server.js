@@ -8,9 +8,10 @@ const NOTES_URL = '/api/notes';
 app.use(express.json());
 
 app.get(NOTES_URL + '/:id', async function getNoteByID(req, res, next) {
-  const { notes } = await getData();
   const noteId = req.params.id;
+
   try {
+    const { notes } = await getData();
     validateId(noteId, notes);
     res.status(200).json(notes[noteId]);
   } catch (err) {
@@ -18,16 +19,20 @@ app.get(NOTES_URL + '/:id', async function getNoteByID(req, res, next) {
   }
 });
 
-app.get(NOTES_URL, async function getAllNotes(req, res) {
-  const { notes } = await getData();
-  res.status(200).json(Object.values(notes));
+app.get(NOTES_URL, async function getAllNotes(req, res, next) {
+  try {
+    const { notes } = await getData();
+    res.status(200).json(Object.values(notes));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post(NOTES_URL, async function createNote(req, res, next) {
-  let { notes, nextId } = await getData();
   const content = req.body.content;
 
   try {
+    let { notes, nextId } = await getData();
     validateContent(content);
     const newNote = { id: nextId, content };
     notes[nextId] = newNote;
@@ -40,10 +45,10 @@ app.post(NOTES_URL, async function createNote(req, res, next) {
 });
 
 app.delete(NOTES_URL + '/:id', async function deleteNote(req, res, next) {
-  const { notes, nextId } = await getData();
   const noteId = req.params.id;
 
   try {
+    const { notes, nextId } = await getData();
     validateId(noteId, notes);
     delete notes[noteId];
     await updateDatabase({ nextId, notes });
@@ -54,11 +59,11 @@ app.delete(NOTES_URL + '/:id', async function deleteNote(req, res, next) {
 });
 
 app.put(NOTES_URL + '/:id', async function updateNote(req, res, next) {
-  const { notes, nextId } = await getData();
   const content = req.body.content;
   const noteId = req.params.id;
 
   try {
+    const { notes, nextId } = await getData();
     validateId(noteId, notes);
     validateContent(content);
     const newNote = {
