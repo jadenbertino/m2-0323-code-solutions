@@ -3,8 +3,7 @@ import pg from 'pg';
 
 // express setup
 import express from 'express';
-const dbName = 'studentGradeTable';
-// eslint-disable-next-line
+const dbName = 'studentGrades';
 const db = new pg.Pool({
   connectionString: `postgres://dev:dev@localhost/${dbName}`,
   ssl: {
@@ -13,10 +12,20 @@ const db = new pg.Pool({
 });
 const app = express();
 const PORT = 3333;
-// eslint-disable-next-line
-const BASE_URL = '/api';
-
 app.use(express.json());
+
+app.get('/api/grades', async (req, res, next) => {
+  try {
+    const sql = `
+      select *
+      from "grades";
+    `;
+    const { rows: grades } = await db.query(sql);
+    res.status(200).json(grades);
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.use(function handleErrors(err, req, res, next) {
   console.log(err);
