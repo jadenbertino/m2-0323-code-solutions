@@ -35,16 +35,36 @@ app.get('/api/grades', async (req, res, next) => {
   }
 });
 
-app.post('/api/grades', async (req, res, next) => {
-  /*
-    POST /api/grades inserts a new grade into the "grades" table and returns the created grade.
-    The client should receive an object, not an array.
-    The result could be a 201, 400, or 500.
-      201 because the grade was successfully inserted
-      400 because the client may supply an invalid grade, including a missing name, course, or score. Or the score isn't an integer from 0 to 100
-      500 or the query may fail
-  */
+app.get('/api/grades/:gradeId', async (req, res, next) => {
+  try {
+    // query param validation
+    const gradeId = Number(req.params.gradeId);
+    const isValidId = Number.isInteger(gradeId) && gradeId > 0;
+    if (!isValidId) {
+      throw new CustomError(
+        400,
+        "Please provide a query parameter for 'gradeId' (positive integer)"
+      );
+    }
 
+    // get grade
+    const sql = `
+      select *
+        from "grades"
+      where "gradeId" = $1
+    `;
+    const { rows } = await db.query(sql, [gradeId]);
+    const [grade] = rows;
+    if (!grade) {
+      throw new CustomError(404, `Cannot find grade with 'gradeId' ${gradeId}`);
+    }
+    res.status(200).json(grade);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/grades', async (req, res, next) => {
   try {
     // body param validation
     const { name, course, score: scoreStr } = req.body;
@@ -63,10 +83,10 @@ app.post('/api/grades', async (req, res, next) => {
     // create grade
     const sql = `
       INSERT INTO "grades" ("name", "course", "score")
-      values ($1, $2, $3);
+      VALUES ($1, $2, $3)
+      RETURNING *;
     `;
     const { rows: grades } = await db.query(sql, [name, course, score]);
-    console.log(grades);
     res.status(201).json(grades[0]);
   } catch (err) {
     next(err);
