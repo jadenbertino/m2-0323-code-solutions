@@ -1,8 +1,11 @@
-// pool setup
-import pg from 'pg';
-
-// express setup
 import express from 'express';
+import pg from 'pg';
+import {
+  CustomError,
+  validateGrade,
+  validateId
+} from './utils/validationUtils.js';
+
 const dbName = 'studentGrades';
 const db = new pg.Pool({
   connectionString: `postgres://dev:dev@localhost/${dbName}`,
@@ -11,17 +14,12 @@ const db = new pg.Pool({
   }
 });
 const app = express();
-const PORT = 8080;
+const PORT = 8080; // only port that works with docker configuration I believe
 app.use(express.json());
 
-class CustomError extends Error {
-  constructor(statusCode, message) {
-    super();
-    this.statusCode = statusCode;
-    this.message = message;
-  }
-}
-
+/**
+ * Get all grades
+ */
 app.get('/api/grades', async (req, res, next) => {
   try {
     const sql = `
@@ -35,26 +33,21 @@ app.get('/api/grades', async (req, res, next) => {
   }
 });
 
+/**
+ * Get grade by ID
+ */
 app.get('/api/grades/:gradeId', async (req, res, next) => {
   try {
-    // query param validation
     const gradeId = Number(req.params.gradeId);
-    const isValidId = Number.isInteger(gradeId) && gradeId > 0;
-    if (!isValidId) {
-      throw new CustomError(
-        400,
-        "Please provide a query parameter for 'gradeId' (positive integer)"
-      );
-    }
+    validateId(gradeId);
 
-    // get grade
     const sql = `
       select *
         from "grades"
       where "gradeId" = $1
     `;
     const { rows } = await db.query(sql, [gradeId]);
-    const [grade] = rows;
+    const grade = rows[0];
     if (!grade) {
       throw new CustomError(404, `Cannot find grade with 'gradeId' ${gradeId}`);
     }
@@ -64,23 +57,15 @@ app.get('/api/grades/:gradeId', async (req, res, next) => {
   }
 });
 
+/**
+ * Create new grade
+ */
 app.post('/api/grades', async (req, res, next) => {
   try {
-    // body param validation
     const { name, course, score: scoreStr } = req.body;
     const score = Number(scoreStr);
-    const invalidBodyParams =
-      typeof name !== 'string' ||
-      typeof course !== 'string' ||
-      !(Number.isInteger(score) && score >= 0 && score <= 100);
-    if (invalidBodyParams) {
-      throw new CustomError(
-        400,
-        "Invalid request body parameters. Please provide valid values for 'name' (string), 'course' (string), and 'score' (integer between 0 and 100, inclusive)."
-      );
-    }
+    validateGrade(name, course, score);
 
-    // create grade
     const sql = `
       INSERT INTO "grades" ("name", "course", "score")
       VALUES ($1, $2, $3)
@@ -93,7 +78,42 @@ app.post('/api/grades', async (req, res, next) => {
   }
 });
 
-app.use(function handleErrors(err, req, res, next) {
+/**
+ * Update grade
+ */
+app.put('/api/grades/:gradeId', async (req, res, next) => {
+  try {
+    const gradeId = Number(req.params.gradeId);
+    validateId(gradeId);
+
+    const { name, course, score: scoreStr } = req.body;
+    const score = Number(scoreStr);
+    validateGrade(name, course, score);
+
+    const sql = `
+      UPDATE "grades"
+      SET 
+        "name" = $1,
+        "course" = $2,
+        "score" = $3
+      WHERE "gradeId" = $4
+      RETURNING *;
+    `;
+    const { rows: grades } = await db.query(sql, [name, course, score, gradeId]);
+    const updatedGrade = grades[0];
+    if (!updatedGrade) {
+      throw new CustomError(404, `No grade with gradeId ${gradeId} found.`);
+    }
+    res.status(200).json(updatedGrade);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Handle Errors
+ */
+app.use((err, req, res, next) => {
   if (err instanceof CustomError) {
     const { statusCode, message } = err;
     res.status(statusCode).json({ error: message });
