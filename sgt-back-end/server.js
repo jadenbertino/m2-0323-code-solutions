@@ -99,12 +99,41 @@ app.put('/api/grades/:gradeId', async (req, res, next) => {
       WHERE "gradeId" = $4
       RETURNING *;
     `;
-    const { rows: grades } = await db.query(sql, [name, course, score, gradeId]);
+    const { rows: grades } = await db.query(sql, [
+      name,
+      course,
+      score,
+      gradeId
+    ]);
     const updatedGrade = grades[0];
     if (!updatedGrade) {
       throw new CustomError(404, `No grade with gradeId ${gradeId} found.`);
     }
     res.status(200).json(updatedGrade);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Delete Grade
+ */
+app.delete('/api/grades/:gradeId', async (req, res, next) => {
+  try {
+    const gradeId = Number(req.params.gradeId);
+    validateId(gradeId);
+
+    const sql = `
+      DELETE FROM "grades"
+      WHERE "gradeId" = $1
+      RETURNING *;
+    `;
+    const { rows } = await db.query(sql, [gradeId]);
+    const deletedGrade = rows[0];
+    if (!deletedGrade) {
+      throw new CustomError(404, `No grade with gradeId ${gradeId} found.`);
+    }
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
