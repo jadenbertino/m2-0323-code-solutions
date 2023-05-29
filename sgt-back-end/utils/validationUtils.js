@@ -11,7 +11,7 @@ export function validateId(id) {
   if (!isValidId) {
     throw new CustomError(
       400,
-      "Please provide a query parameter for 'gradeId' (positive integer)"
+      "Please provide a valid query parameter for 'gradeId' (positive integer)"
     );
   }
 }
@@ -24,7 +24,13 @@ export function validateGrade(name, course, score) {
   if (invalidBodyParams) {
     throw new CustomError(
       400,
-      "Invalid request body parameters. Please provide valid values for 'name' (string), 'course' (string), and 'score' (integer between 0 and 100, inclusive)."
+      "Please provide valid request body parameters for 'name' (string), 'course' (string), and 'score' (integer between 0 and 100, inclusive)."
     );
   }
+}
+
+export function catchAsyncErrors(asyncCallback) {
+  return function (req, res, next) {
+    asyncCallback(req, res, next).catch(next);
+  };
 }
